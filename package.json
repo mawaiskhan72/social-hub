@@ -1,0 +1,17 @@
+{
+  "name": "social-hub",
+  "version": "1.0.0",
+  "description": "A social media hub displaying posts from JSONPlaceholder API",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "build": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1"
+  }
+}
