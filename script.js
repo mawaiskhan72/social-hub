@@ -4,9 +4,14 @@ async function fetchPosts() {
     const posts = await response.json();
     
     let likes = JSON.parse(localStorage.getItem('postLikes')) || {};
-    
+    const addedPosts = JSON.parse(localStorage.getItem("addedPosts")) || [];
+
+    postsArray = [...posts,...addedPosts];
+    console.log("📝 All posts:", postsArray);
     container.innerHTML = '';
-    posts.forEach(post => {
+
+
+    postsArray.forEach(post => {
         const postId = post.id;
         const isLiked = likes[postId] || false;
         const likeCount = Math.floor(Math.random() * 100); 
@@ -41,6 +46,7 @@ async function fetchPosts() {
             </div>
 
             </div>
+            
         `;
         container.appendChild(postElement);
     });
@@ -82,7 +88,7 @@ async function fetchPosts() {
                 likeCount.textContent = currentLikes - 1;
             } else {
                 likeIcon.src = 'assets/icons/heart-red.svg';
-                likeIcon.classList.remove('text-gray-500');
+                likeIcon.classList.remove('text-gray-500');     
                 likeIcon.classList.add('text-red-500');
                 likeCount.textContent = currentLikes + 1;
             }
@@ -105,6 +111,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Upload Post
+const feed = document.getElementById("feed");
+const uploadBtn = document.getElementById("uploadBtn");
+
+    uploadBtn.addEventListener("click", () => {
+      const imageInput = document.getElementById("imageInput");
+      const title = document.getElementById("titleInput").value;
+      const desc = document.getElementById("descInput").value;
+
+      if (!imageInput.files[0] || !title || !desc) {
+        alert("Please select image, enter title and description!");
+        return;
+      }
+
+      const newpost = {
+        userId: 1,
+        id: postsArray.length + 1,
+        image : imageInput.files[0],
+        title : title,
+        description : desc,
+        likes : 0
+    } 
+    const saved = JSON.parse(localStorage.getItem("addedPosts")) || [];
+    saved.push(newpost);
+    localStorage.setItem("addedPosts", JSON.stringify(saved));
+
+
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const postHTML = `
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <img src="${event.target.result}" 
+                 alt="Post" 
+                 class="w-full h-64 object-cover rounded-lg mb-4" />
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">${title}</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">${desc}</p>
+          </div>
+        `;
+        feed.insertAdjacentHTML("afterbegin", postHTML); // new post at top
+      };
+      reader.readAsDataURL(imageInput.files[0]); 
+      imageInput.value = "";
+      document.getElementById("titleInput").value = "";
+      document.getElementById("descInput").value = "";
+    });
+
+
+const createPostBtn = document.getElementById("createPostBtn");
+const uploadForm = document.getElementById("uploadForm");
+
+createPostBtn.addEventListener("click", () => {
+uploadForm.classList.toggle("hidden"); // toggle form ko gayab karna
+});
+ 
+   
+
+    
 
 
 
